@@ -200,6 +200,8 @@
 		var dtkUrl = 'http://www.googledrive.com/host/0B3IpqaFW14H6QWlGdGdBTkFTZWM/z{z}/{y}/{x}.png';
 		/*MTB*/	
 		var mtbUrl = 'http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png';
+		/*ESRI*/
+		var esriUrl = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 		/*if(window.location.protocol == "https:") {
 			topoUrl = "https://opentopomap.org/{z}/{x}/{y}.png"; //tiles are only for https directyl on opentopomap.org
 		}*/	
@@ -209,11 +211,15 @@
 			dtkAttribution = 'Podatki na zemljevidu: &copy;GURS | Uredil: &copy; Uroš Zorko',
 		/*MTB*/	
 			mtbAttribution = 'Podatki na zemljevidu: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &amp; USGS',
+		/*ESRI*/
+			esriAttribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
 		/*DTK*/		
 			dtk = new L.TileLayer(dtkUrl, {minZoom: 6, maxZoom: 15, detectRetina: true, attribution: dtkAttribution});
 		var	topo = new L.TileLayer(topoUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: topoAttribution});
 		/*MTB*/	
 		var mtb = new L.TileLayer(mtbUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: mtbAttribution});
+		/*ESRI*/
+		var esri = new L.TileLayer(esriUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: esriAttribution});
 		var topoalt = new L.TileLayer(topoaltUrl, {minZoom: 1, maxZoom: 15, detectRetina: true, attribution: topoAttribution});
 		var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 			osmAttribution = 'Kartendaten &copy; OpenStreetMap'
@@ -230,6 +236,16 @@
 		var lonviaCyclingUrl = 'http://tile.lonvia.de/cycling/{z}/{x}/{y}.png',
 			lonviaCyclingAttribution = 'Wanderwege &copy; Lonvia',
 			lonviaCycling = new L.TileLayer(lonviaCyclingUrl, {maxZoom: 16, attribution: lonviaCyclingAttribution, opacity: 0.7});
+		/*VREME*/
+		var OpenWeatherMap_WindUrl = 'http://{s}.tile.openweathermap.org/map/wind/{z}/{x}/{y}.png',
+			OpenWeatherMap_WindAttribution = 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
+			OpenWeatherMap_Wind = new L.TileLayer(OpenWeatherMap_WindUrl, {maxZoom: 19, attribution: OpenWeatherMap_WindAttribution, opacity: 0.5});
+		var OpenWeatherMap_CloudsUrl = 'http://{s}.tile.openweathermap.org/map/clouds/{z}/{x}/{y}.png',
+			OpenWeatherMap_CloudsAttribution = 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
+			OpenWeatherMap_Clouds = new L.TileLayer(OpenWeatherMap_CloudsUrl, {maxZoom: 19, attribution: OpenWeatherMap_CloudsAttribution, opacity: 0.5});
+		var OpenWeatherMap_PressureUrl = 'http://{s}.tile.openweathermap.org/map/pressure/{z}/{x}/{y}.png',
+			OpenWeatherMap_PressureAttribution = 'Map data &copy; <a href="http://openweathermap.org">OpenWeatherMap</a>',
+			OpenWeatherMap_Pressure = new L.TileLayer(OpenWeatherMap_PressureUrl, {maxZoom: 19, attribution: OpenWeatherMap_PressureAttribution, opacity: 0.5});	
 
 		map.addLayer(dtk);
 		var grid = L.grid({redraw: 'moveend'});
@@ -248,6 +264,8 @@
 			"OpenTopoMap 2.0": topo,
 			/*MTB*/
 			"MtbMap": mtb,
+			/*ESRI*/
+			"Esri WorldImagery": esri,
 			"OpenTopoMap (alt)": topoalt,
 			"OpenStreetMap": osm,
 			"Landsat": landsat
@@ -255,7 +273,10 @@
 		var overlayMaps = {
 			"Lonvia Wanderrouten": lonviaHiking,
 			"Lonvia Radrouten": lonviaCycling,
-			"Gradnetz": grid
+			"Gradnetz": grid,
+			"Veter": OpenWeatherMap_Wind,
+			"Oblaki": OpenWeatherMap_Clouds,
+			"Pritisk": OpenWeatherMap_Pressure
 		}
 
 		var layersControl = new L.Control.Layers(baseMaps, overlayMaps);
