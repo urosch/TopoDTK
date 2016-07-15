@@ -200,7 +200,7 @@
 		/*DTK*/
 			dtkAttribution = 'Podatki na zemljevidu: &copy;GURS | Uredil: &copy; Uroš Zorko',
 		/*DTK*/		
-			dtk = new L.TileLayer(dtkUrl, {minZoom: 6, maxZoom: 15, detectRetina: true, attribution: dtkAttribution});
+			dtk = new L.TileLayer(dtkUrl, {minZoom: 3, maxZoom: 15, detectRetina: true, attribution: dtkAttribution});
 		var	topo = new L.TileLayer(topoUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: topoAttribution});
 		var topoalt = new L.TileLayer(topoaltUrl, {minZoom: 1, maxZoom: 15, detectRetina: true, attribution: topoAttribution});
 		var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
