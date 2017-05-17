@@ -16,13 +16,14 @@
 		<script src="leaflet/L.Control.Locate.js"></script>
 		<script src="leaflet/leaflet-search.js"></script>
 		<script src="leaflet/leaflet.marker/L.Control.Marker.js"></script>
-	
 		<script src="leaflet/leaflet.filelayer/leaflet.filelayer.js"></script>
-		<script src="leaflet/leaflet.filelayer/togeojson.js"></script>
-	
+	    <script src="leaflet/leaflet.fullscreen/Control.FullScreen.js"></script>
+	    <link rel="stylesheet" href="leaflet/leaflet.fullscreen/Control.FullScreen.css" />
+	    <script src="leaflet/leaflet.filelayer/togeojson.js"></script>
 		<script src="leaflet/leaflet.elevation/d3.min.js" charset="utf-8"></script>
+		<script src="leaflet/leaflet.elevation/gpx.min.js"></script>
 		<link rel="stylesheet" href="leaflet/leaflet.elevation/Leaflet.Elevation-0.0.2.css" />
-		<script type="text/javascript" src="leaflet/leaflet.elevation/Leaflet.Elevation-0.0.2.src.js"></script>
+		<script type="text/javascript" src="leaflet/leaflet.elevation/Leaflet.Elevation-0.0.2.min.js"></script>
 
 		<script src="js/translate.js"></script>
 		<script> (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
@@ -166,7 +167,12 @@
 			}
 		}
 
-		map = new L.Map('map');
+		map = new L.Map('map', {
+            fullscreenControl: true,
+            fullscreenControlOptions: {
+            position: 'topleft'
+            }
+        });
 		map.attributionControl.setPrefix(false);
 		map.dragging.enable();
 		map.touchZoom.enable();
@@ -193,15 +199,24 @@
 			popupText: ["Sie befinden sich innerhalb "," von diesem Punkt"]
 		}).addTo(map);
 
+        // events are fired when entering or exiting fullscreen.
+        map.on('enterFullscreen', function(){
+        console.log('entered fullscreen');
+        });
+        map.on('exitFullscreen', function(){
+        console.log('exited fullscreen');
+        });
 
 		var topoUrl = 'https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
-		var topoaltUrl = 'http://alt.opentopomap.org/{z}/{x}/{y}.png';
+		/*var topoaltUrl = 'http://alt.opentopomap.org/{z}/{x}/{y}.png';*/
+		var bikemUrl = 'https://tile0{s}-cdn.maptoolkit.net/terrain/{z}/{x}/{y}.png';
 		/*DTK*/
-		var dtkUrl = 'http://karta.ga/DTK25moja/{z}/{y}/{x}.png';
+	/*	var dtkUrl = 'https://urosch.gitlab.io/TopoDTK/DTK25moja/{z}/{y}/{x}.png';*/
+		var dtkUrl = 'https://gitlab.com/Urosch/TopoDTK/raw/gh-pages/DTK25moja/{z}/{y}/{x}.png';
 		/*MTB*/	
 		var mtbUrl = 'http://tile.mtbmap.cz/mtbmap_tiles/{z}/{x}/{y}.png';
 		/*ESRI*/
-		var esriUrl = 'http://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
+		var esriUrl = 'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}';
 		/*if(window.location.protocol == "https:") {
 			topoUrl = "https://opentopomap.org/{z}/{x}/{y}.png"; //tiles are only for https directyl on opentopomap.org
 		}*/	
@@ -213,21 +228,23 @@
 			mtbAttribution = 'Podatki na zemljevidu: &copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> &amp; USGS',
 		/*ESRI*/
 			esriAttribution = 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+		    bikemAttribution = 'Podatki na zemljevidu: &copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OSM</a> &amp; USGS',
 		/*DTK*/		
 			dtk = new L.TileLayer(dtkUrl, {minZoom: 6, maxZoom: 15, detectRetina: true, attribution: dtkAttribution});
 		var	topo = new L.TileLayer(topoUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: topoAttribution});
 		/*MTB*/	
 		var mtb = new L.TileLayer(mtbUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: mtbAttribution});
 		/*ESRI*/
-		var esri = new L.TileLayer(esriUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: esriAttribution});
-		var topoalt = new L.TileLayer(topoaltUrl, {minZoom: 1, maxZoom: 15, detectRetina: true, attribution: topoAttribution});
+		var esri = new L.TileLayer(esriUrl, {minZoom: 1, maxZoom: 18, detectRetina: true, attribution: esriAttribution});
+		/*var topoalt = new L.TileLayer(topoaltUrl, {minZoom: 1, maxZoom: 15, detectRetina: true, attribution: topoAttribution});*/
+		var bikem = new L.TileLayer(bikemUrl, {minZoom: 1, maxZoom: 18, detectRetina: true, attribution: bikemAttribution, subdomains: '123'});
 		var osmUrl = 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
 			osmAttribution = 'Kartendaten &copy; OpenStreetMap'
 			osm = new L.TileLayer(osmUrl, {maxZoom: 19, detectRetina: true, attribution: osmAttribution});
 			
-		var landsatUrl = 'http://irs.gis-lab.info/?layers=landsat&request=GetTile&z={z}&x={x}&y={y}',
-			landsatAttribution = 'Satellitenbild &copy; Landsat (via <a href="http://irs.gis-lab.info">GIS-Lab</a>)'
-			landsat = new L.TileLayer(landsatUrl, {maxZoom: 16, detectRetina: true, attribution: landsatAttribution});
+		var runkUrl = 'https://{s}.tiles.mapbox.com/v4/runkeeper.4nc7syvi/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoicnVua2VlcGVyIiwiYSI6ImNmT0l4VzQifQ.mJu3GXkgObOnAoUpXa1Q3g',
+			runkAttribution = 'RunKTopo &copy; <a href="https://www.mapbox.com/about/maps/" target="_blank">Mapbox OpenStreetMap</a> &amp; USGS',
+			runk = new L.TileLayer(runkUrl, {maxZoom: 22, detectRetina: true, attribution: runkAttribution});
 
 		var lonviaHikingUrl = 'http://tile.lonvia.de/hiking/{z}/{x}/{y}.png',
 			lonviaHikingAttribution = 'Wanderwege &copy; Lonvia',
@@ -259,16 +276,13 @@
     	map.addControl(new L.Control.Scale({width: 200, position: 'bottomleft', imperial: false}));
 
 		var baseMaps = {
-			/*DTK*/
 			"DTK25": dtk,		
 			"OpenTopoMap 2.0": topo,
-			/*MTB*/
 			"MtbMap": mtb,
-			/*ESRI*/
-			"Esri WorldImagery": esri,
-			"OpenTopoMap (alt)": topoalt,
+			"RunK": runk,
+			"BikeM": bikem,
 			"OpenStreetMap": osm,
-			"Landsat": landsat
+			"Esri WorldImagery": esri
 		}
 		var overlayMaps = {
 			"Lonvia Wanderrouten": lonviaHiking,
