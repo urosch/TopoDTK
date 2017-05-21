@@ -148,7 +148,7 @@
 					var position = cookie_read("map").split("/");
 					map.setView(new L.LatLng(position[1], position[2]), position[0]);
 				} else {
-					map.setView(new L.LatLng(49, 10), 5);
+					map.setView(new L.LatLng(46.1, 15), 8);
 				}
 				set_hash();
 			}
@@ -159,7 +159,7 @@
 		function isValid(p) {
 			if(isNaN(p[0]) || (parseFloat(p[0]) != parseInt(p[0])) || isNaN(p[1]) || isNaN(p[2])) {
 				window.location.replace("");
-				map.setView(new L.LatLng(49, 9), 5);
+				map.setView(new L.LatLng(46.1, 15), 8);
 				//alert("invalid coordinates");
 				return false;
 			} else {
@@ -206,7 +206,11 @@
         map.on('exitFullscreen', function(){
         console.log('exited fullscreen');
         });
-
+       		/*dodal bounds za dtk */
+        	var southWest = L.latLng(45.440, 13.370), 
+            	northEast = L.latLng(46.910, 16.680),
+            	meje = L.latLngBounds(southWest, northEast);
+        	/*konec bounds*/
 		var topoUrl = 'http://{s}.tile.opentopomap.org/{z}/{x}/{y}.png';
 		/*var topoaltUrl = 'http://alt.opentopomap.org/{z}/{x}/{y}.png';*/
 		var bikemUrl = 'http://tile0{s}-cdn.maptoolkit.net/terrain/{z}/{x}/{y}.png';
@@ -231,7 +235,7 @@
 		    bikemAttribution = 'Podatki na zemljevidu: &copy; <a href="http://www.openstreetmap.org/copyright" target="_blank">OSM</a> &amp; USGS',
 		/*DTK*/		
 			dtk = new L.TileLayer(dtkUrl, {minZoom: 6, maxZoom: 15, detectRetina: true, attribution: dtkAttribution});
-		var	topo = new L.TileLayer(topoUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: topoAttribution});
+		var	topo = new L.TileLayer(topoUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, bounds: meje, attribution: topoAttribution});
 		/*MTB*/	
 		var mtb = new L.TileLayer(mtbUrl, {minZoom: 1, maxZoom: 17, detectRetina: true, attribution: mtbAttribution});
 		/*ESRI*/
